@@ -1,10 +1,23 @@
+import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Button, Alert, TextInput} from 'react-native';
 
 export default function App() {
+
+    const [msg, setMsg] = React.useState('');
+    const buttonPressed = () => {
+      Alert.alert("hello", "You typed: " + msg)
+    }
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+      <TextInput
+        style={{width: 200, borderColor: 'gray', borderWidth: 1}}
+        value={msg}
+        onChangeText={text => setMsg(text)}
+        />
+      <Button
+        onPress={buttonPressed}
+        title="Press me"/>
       <StatusBar style="auto" />
     </View>
   );
