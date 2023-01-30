@@ -1,60 +1,82 @@
-import React, {useEffect} from 'react';
-import { StyleSheet, Text, View, Button, Alert, TextInput} from 'react-native';
+import React, {useState} from 'react';
+import { StyleSheet, Text, View, Button, Alert, TextInput, FlatList} from 'react-native';
+
 
 export default function App() {
-    const [guess, setGuess] = React.useState();
-    const [counter, setCounter] = React.useState();
-    const[random, setRandom] = React.useState();
-    const[message, setMessage] = React.useState("");
+    const[shopping, setShopping] = useState('');
+    const[shoppingList, setShoppingList] = useState([]);
 
-    useEffect (() => {
-      startGame();
-    }, []); 
-
-  const startGame = () => {
-        setRandom(Math.floor(Math.random() * 100) + 1);
-        setCounter(0);
-        setMessage("Guess a number between 1-100");
-        setGuess();
+    const addToList = () => {
+        if(shopping) {
+            setShoppingList([...shoppingList,shopping]);
+            setShopping("");
+        } else {
+            Alert.alert("Please, type in the item first")
+        }
+        
     }
 
-    const checkGuess = () => {
-      if(random - guess == 0) {
-        Alert.alert("You guessed the number in " + counter + " guesses");
-        startGame();
-      } else if(random - guess > 0) {
-        setMessage("Your guess " + guess + " is too low");
-        setCounter(counter + 1);
-        setGuess();
-      } else if(random - guess < 0) {
-        setMessage("Your guess " + guess + " is too high");
-        setCounter(counter + 1);
-        setGuess();
-      }
+    const listSeparator = () => {
+        return(
+            <View style={{height:1, backgroundColor: 'pink'}} />
+        );
     }
+    
 
-  return (
-    <View style={styles.container}>
-    <View><Text>{message}</Text></View>
-    <View>
+    return (
+    <View style={{flex: 10}}>
+    <View style={input.container3}>
+        <Text>Type in an item: </Text>
         <TextInput
             style={{width: 200, borderColor: 'gray', borderWidth: 1}}
-            keyboardType='numeric'
-            value={guess}
-            onChangeText={text => setGuess(text)}/>
+            value={shopping}
+            onChangeText={shopping => setShopping(shopping)}
+        />
+    </View>
+    <View style={button.container1}>
         <Button
-        onPress={checkGuess}
-        title="Make a Guess"/>
+        title="Add to shopping list"
+        onPress={addToList}
+        />
+        <Button
+        title="Clear list"
+        onPress={() => setShoppingList([])}/>
     </View>
+    <View style={list.container2}>
+    {shoppingList.length > 0 && <Text style={{fontSize: 22, textDecorationLine: 'underline', color: 'gray' }}>Things to buy</Text> }
+        <FlatList
+        data={shoppingList}
+        ItemSeparatorComponent={listSeparator}
+        renderItem={({item}) => <Text style={{fontSize:18}}>{item}</Text>}
+        />
+    </View> 
     </View>
-  );
+      );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-});
+const button = StyleSheet.create({
+    container1: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        justifyContent: 'space-around'
+    }
+  });
+
+  const input = StyleSheet.create({
+    container3: {
+        flex: 2,
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
+  })
+
+  const list = StyleSheet.create({
+    container2: {
+        flex: 7,
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
+  });
+
+  //if you want to render multiple components you need as many text components inside a parent view

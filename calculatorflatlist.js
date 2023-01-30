@@ -1,30 +1,34 @@
 import React from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, Alert, TextInput} from 'react-native';
+import { StyleSheet, Text, View, Button, Alert, TextInput, FlatList} from 'react-native';
 
 export default function App() {
     const [firstNum, setFirstNum] = React.useState();
     const [secondNum, setSecondNum] = React.useState();
     const [result, setResult] = React.useState();
+    const[history, setHistory] = React.useState([]);
+    let total;
 
     const add = () => {
-        setResult(parseInt(firstNum) + parseInt(secondNum))
+        total = parseInt(firstNum) + parseInt(secondNum)
+        setResult(total)
+        setHistory([...history, firstNum + " + " + secondNum + " = " + total])
         setFirstNum();
         setSecondNum();
     }
 
     const decrement = () => {
-        setResult(parseInt(firstNum) - parseInt(secondNum));
+        total = parseInt(firstNum) - parseInt(secondNum)
+        setResult(total)
+        setHistory([...history, firstNum + " - " + secondNum + " = " + total])
         setFirstNum();
         setSecondNum();
     }
+    
 
   return (
-    <View style={styles.container}>
-        <View>
-         {result &&
-        <Text>Result :</Text>}
-        <Text>{result}</Text>
+    <View style={{flex: 8, justifyContent: 'center'}}>
+        <View style={styles.container}>
+        <Text>Result : {result}</Text>
         <TextInput
             style={{width: 200, borderColor: 'gray', borderWidth: 1}}
             keyboardType='numeric'
@@ -43,27 +47,46 @@ export default function App() {
       <Button
         onPress={decrement}
         title="-"/>
-      <StatusBar style="auto" />
       </View>
+      {history.length > 0 &&
+      <View style={historyStyle.container2}>
+        <Text>History:</Text>
+        <FlatList
+        data={history}
+        renderItem={({item}) => <Text>{item}</Text> }
+        /></View>}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 2,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 70
+    
   },
 });
 
 const buttonStyles = StyleSheet.create({
   container1: {
+    flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    margin: 5
+    alignItems: 'flex-start',
+    justifyContent: 'space-around',
+    marginLeft: 70,
+    marginRight: 70
   },
+});
+
+const historyStyle = StyleSheet.create({
+  container2: {
+    flex:5, 
+    alignItems: 'center', 
+    justifyContent: 'flex-start',
+
+  }
 });
 //parseFloat or parseInt
